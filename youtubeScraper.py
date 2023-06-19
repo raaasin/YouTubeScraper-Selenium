@@ -14,7 +14,8 @@ import argparse
 import yt_dlp
 import pytube
 import time
-
+import requests
+from bs4 import BeautifulSoup
 
 KEYWORD = "KMEC"
 MAX_SCROLLS = 1
@@ -141,7 +142,6 @@ def scrape_video_data(driver: webdriver.Firefox) -> dict:
             video_id = video_info['video_id']
             dt_posted = video_info['upload_date']
             description = video_info['description']
-            stats_for_nerds = video_info['stats_for_nerds']
         else:
             yt_master = pytube.YouTube(link)
             try:
@@ -162,7 +162,6 @@ def scrape_video_data(driver: webdriver.Firefox) -> dict:
                 dt_posted = yt_master.publish_date.strftime("%Y-%m-%d %H:%M:%S")
             except:
                 dt_posted = None
-            stats_for_nerds = None
 
         youtube_data.append({
             "Channel ID": channelid,
@@ -173,11 +172,42 @@ def scrape_video_data(driver: webdriver.Firefox) -> dict:
             "Dt Posted": dt_posted,              
             "Views Count": views,
             "Duration": vid_duration,
-            "Stats for Nerds": stats_for_nerds
         })
+        social_blade_data=get_channel_stats(channelid)
 
-    return youtube_data
+        final_data = youtube_data + social_blade_data
 
+    return final_data
+
+def get_channel_stats(channel_id: str) -> dict:
+    social_data = []
+    """
+    Retrieve channel statistics from Social Blade using the channel ID.
+    """
+    url = f"https://socialblade.com/youtube/channel/{channel_id}"
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, "html.parser")
+    
+    uploads_elem = soup.find("span", class_="YouTubeUserTopLight", text="Uploads")
+    uploads = uploads_elem.find_next_sibling("span").text if uploads_elem else None
+    
+    views_elem = soup.find("span", class_="YouTubeUserTopLight", text="Video Views")
+    views = views_elem.find_next_sibling("span").text if views_elem else None
+    
+    created_elem = soup.find("span", class_="YouTubeUserTopLight", text="User Created")
+    created_date = created_elem.find_next_sibling("span").text if created_elem else None
+    
+    country_elem = soup.find("span", class_="YouTubeUserTopLight", text="Country")
+    country = country_elem.find_next_sibling("span").text if country_elem else None
+
+    social_data.append({
+        "uploads": uploads,
+        "views": views,
+        "created_date": created_date,
+        "country": country
+    })
+
+    return social_data
 
 def save_data(data):
 

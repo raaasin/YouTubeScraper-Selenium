@@ -44,7 +44,7 @@ def get_webdriverOptions() -> Options:
     options.add_argument("--disable-setuid-sandbox")
     options.add_argument("--disable-logging")
     options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--ignore-certificate-errors")  # Add this line
+    options.add_argument("--ignore-certificate-errors")
     if HEADLESS:
         options.add_argument('--headless')
 

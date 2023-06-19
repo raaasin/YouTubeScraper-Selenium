@@ -14,10 +14,10 @@ import argparse
 import yt_dlp
 import pytube
 import time
-#testing git
 
-KEYWORD = "Selenium automation with Python"
-MAX_SCROLLS = 300
+
+KEYWORD = "KMEC"
+MAX_SCROLLS = 1
 OUTPUT_FILENAME = "output1"
 OUTPUT_FILEFORMAT = "xlsx"
 HEADLESS = True
@@ -31,7 +31,7 @@ def initialize_driver(options: Options) -> webdriver.Firefox:
 
 def get_webdriverOptions() -> Options:
     """
-    returns a webdriver options object with the required options set
+    Returns a webdriver options object with the required options set.
     """
     options = Options()
     user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36'
@@ -44,10 +44,12 @@ def get_webdriverOptions() -> Options:
     options.add_argument("--disable-setuid-sandbox")
     options.add_argument("--disable-logging")
     options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--ignore-certificate-errors")  # Add this line
     if HEADLESS:
         options.add_argument('--headless')
-        
+
     return options
+
     
 def get_video_info(video_url):
     ydl_opts = {
@@ -59,7 +61,10 @@ def get_video_info(video_url):
         'getduration': True,
         'getid': True,
         'getdescription': True,
-        'getuploaddate': True
+        'getuploaddate': True,
+        'getthumbnail': False,
+        'noplaylist': True,  
+        'allformats': False 
     }
     max_tries = 3
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -71,6 +76,7 @@ def get_video_info(video_url):
                 channel_id = info_dict.get('channel_id')
                 description = info_dict.get('description')
                 upload_date = info_dict.get('upload_date')
+                stats_for_nerds = info_dict.get('annotations', {}).get('playerAnnotations')
                 if duration and video_id and channel_id and description and upload_date:
                     minutes, seconds = divmod(duration, 60)
                     return {
@@ -78,13 +84,15 @@ def get_video_info(video_url):
                         'video_id': video_id,
                         'channel_id': channel_id,
                         'description': description,
-                        'upload_date': upload_date
+                        'upload_date': upload_date,
+                        'stats_for_nerds': stats_for_nerds
                     }
-            except (yt_dlp.DownloadError,AttributeError):
+            except (yt_dlp.DownloadError, AttributeError):
                 pass
-            max_tries-=1
-    
+            max_tries -= 1
+
     return None
+
 
 
 def search_youtube_videos(driver: webdriver.Firefox, keyword: str, max_scrolls: int) -> None:
@@ -119,7 +127,7 @@ def scrape_video_data(driver: webdriver.Firefox) -> dict:
     Scrape video data from the current YouTube search results page.
     """
     youtube_data = []
-    for result in tqdm(driver.find_elements(By.CSS_SELECTOR, '.text-wrapper.style-scope.ytd-video-renderer'),desc="Processing", unit="video"):
+    for result in tqdm(driver.find_elements(By.CSS_SELECTOR, '.text-wrapper.style-scope.ytd-video-renderer'), desc="Processing", unit="video"):
         
         link = result.find_element(By.CSS_SELECTOR, '.title-and-badge.style-scope.ytd-video-renderer a').get_attribute('href')
         title = result.find_element(By.CSS_SELECTOR, '.title-and-badge.style-scope.ytd-video-renderer').text
@@ -133,6 +141,7 @@ def scrape_video_data(driver: webdriver.Firefox) -> dict:
             video_id = video_info['video_id']
             dt_posted = video_info['upload_date']
             description = video_info['description']
+            stats_for_nerds = video_info['stats_for_nerds']
         else:
             yt_master = pytube.YouTube(link)
             try:
@@ -153,20 +162,22 @@ def scrape_video_data(driver: webdriver.Firefox) -> dict:
                 dt_posted = yt_master.publish_date.strftime("%Y-%m-%d %H:%M:%S")
             except:
                 dt_posted = None
-            
-        youtube_data.append({
+            stats_for_nerds = None
 
-            "Channel ID" : channelid,
-            "Video ID" : video_id,
-            "Youtube Link" :link,
-            "Video Title" : title,
-            "Description" : description,
+        youtube_data.append({
+            "Channel ID": channelid,
+            "Video ID": video_id,
+            "Youtube Link": link,
+            "Video Title": title,
+            "Description": description,
             "Dt Posted": dt_posted,              
-            "Views Count": views ,
-            "Duration":vid_duration
+            "Views Count": views,
+            "Duration": vid_duration,
+            "Stats for Nerds": stats_for_nerds
         })
 
     return youtube_data
+
 
 def save_data(data):
 

@@ -14,8 +14,6 @@ import argparse
 import yt_dlp
 import pytube
 import time
-import requests
-from bs4 import BeautifulSoup
 
 KEYWORD = "KMEC"
 MAX_SCROLLS = 1
@@ -23,9 +21,9 @@ OUTPUT_FILENAME = "output1"
 OUTPUT_FILEFORMAT = "xlsx"
 HEADLESS = True
 
-def initialize_driver(options: Options) -> webdriver.Firefox:
+def initialize_driver(options: Options) -> webdriver.Chrome:
     """
-    Initialize and return a Firefox webdriver instance with provided options.
+    Initialize and return a Chrome webdriver instance with provided options.
     """
     driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install()))
     return driver
@@ -181,33 +179,53 @@ def scrape_video_data(driver: webdriver.Firefox) -> dict:
 
 def get_channel_stats(channel_id: str) -> dict:
     social_data = []
-    """
-    Retrieve channel statistics from Social Blade using the channel ID.
-    """
+
+    # Set up the Selenium driver
+    options = get_webdriverOptions()
+    driver = initialize_driver(options=options)
+
     url = f"https://socialblade.com/youtube/channel/{channel_id}"
-    response = requests.get(url)
-    soup = BeautifulSoup(response.content, "html.parser")
-    
-    uploads_elem = soup.find("span", class_="YouTubeUserTopLight", text="Uploads")
-    uploads = uploads_elem.find_next_sibling("span").text if uploads_elem else None
-    
-    views_elem = soup.find("span", class_="YouTubeUserTopLight", text="Video Views")
-    views = views_elem.find_next_sibling("span").text if views_elem else None
-    
-    created_elem = soup.find("span", class_="YouTubeUserTopLight", text="User Created")
-    created_date = created_elem.find_next_sibling("span").text if created_elem else None
-    
-    country_elem = soup.find("span", class_="YouTubeUserTopLight", text="Country")
-    country = country_elem.find_next_sibling("span").text if country_elem else None
+    driver.get(url)
+
+    # Wait for the dynamic content to load (adjust the sleep duration if needed)
+    time.sleep(5)
+
+    # Extract the channel statistics
+    uploads_elem = driver.find_element(By.XPATH, "//div[@class='YouTubeUserTopInfo'][1]/span[2]")
+    uploads = uploads_elem.text if uploads_elem else None
+
+    subscribers_elem = driver.find_element(By.XPATH, "//div[@class='YouTubeUserTopInfo'][2]/span[2]")
+    subscribers = subscribers_elem.text if subscribers_elem else None
+
+    views_elem = driver.find_element(By.XPATH, "//div[@class='YouTubeUserTopInfo'][3]/span[2]")
+    views = views_elem.text if views_elem else None
+
+    country_elem = driver.find_element(By.XPATH, "//div[@class='YouTubeUserTopInfo'][4]/span[2]/a")
+    country = country_elem.text if country_elem else None
+
+    channel_type_elem = driver.find_element(By.XPATH, "//div[@class='YouTubeUserTopInfo'][5]/span[2]/a")
+    channel_type = channel_type_elem.text if channel_type_elem else None
+
+    created_elem = driver.find_element(By.XPATH, "//div[@class='YouTubeUserTopInfo'][6]/span[2]")
+    created = created_elem.text if created_elem else None
 
     social_data.append({
         "uploads": uploads,
+        "subscribers": subscribers,
         "views": views,
-        "created_date": created_date,
-        "country": country
+        "country": country,
+        "channel_type": channel_type,
+        "created": created
     })
 
+    # Close the Selenium driver
+    driver.quit()
+
     return social_data
+
+
+
+
 
 def save_data(data):
 

@@ -61,3 +61,42 @@ JavaScript error: resource://gre/modules/XULStore.sys.mjs, line 58: Error: Can't
 [ERROR glean_core] Error setting metrics feature config: Json(Error("EOF while parsing a value", line: 1, column: 0))
 DevTools listening on ws://127.0.0.1:46649/devtools/browser/496a32f3-739a-49b3-93a1-70d5865b9452
 1685110930102	Marionette	WARN	Ignoring event 'DOMContentLoaded' because document has an invalid readyState of 'complete'.
+1687266355836	geckodriver	INFO	Listening on 127.0.0.1:63895
+1687266579663	geckodriver	INFO	Listening on 127.0.0.1:64020
+1687266675530	geckodriver	INFO	Listening on 127.0.0.1:64210
+1687266678591	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--remote-debugging-port" "64211" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\dell\\AppData\\Local\\Temp\\rust_mozprofileTxNTEO"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1687266678847	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+1687266678852	Marionette	INFO	Listening on port 64219
+Read port: 64219
+WebDriver BiDi listening on ws://127.0.0.1:64211
+1687266678982	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1687266679000	RemoteAgent	INFO	Proxy settings initialised: {"proxyType":"manual","httpProxy":"127.0.0.1:64209","sslProxy":"127.0.0.1:64209"}
+DevTools listening on ws://127.0.0.1:64211/devtools/browser/6c0c3548-8e02-4d99-81b0-1882602b522b
+1687266694540	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+1687266702515	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/F23xA4-E8U0dLsM7Ua-M74A0tuvycQb5txb3FNVg6II.js line 2 > eval line 1051 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1687335107369	geckodriver	INFO	Listening on 127.0.0.1:63009
+1687335110422	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--remote-debugging-port" "63010" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\dell\\AppData\\Local\\Temp\\rust_mozprofilesSKtP3"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1687335110891	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+1687335110897	Marionette	INFO	Listening on port 63023
+Read port: 63023
+WebDriver BiDi listening on ws://127.0.0.1:63010
+1687335111082	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1687335111107	RemoteAgent	INFO	Proxy settings initialised: {"proxyType":"manual","httpProxy":"127.0.0.1:63008","sslProxy":"127.0.0.1:63008"}
+DevTools listening on ws://127.0.0.1:63010/devtools/browser/98c2cc13-d3dd-44ad-92ba-733770d36f43
+JavaScript error: https://socialblade.com/youtube/channel/UCLx0Y5AJpHhoh-PjH7EAp1Q, line 1251: ReferenceError: Highcharts is not defined
+JavaScript error: , line 0: uncaught exception: undefined
+1687335148184	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+1687335148459	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+1687335148921	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+1687335149364	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+1687335149756	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/_gLG9aN8cjF7vXKbMeOxmtCOjM8PIsJVPzQXNT2dY7E.js line 2 > eval line 6732 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+Shutting down due to socket process crash.

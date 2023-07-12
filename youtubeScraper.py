@@ -15,7 +15,7 @@ import yt_dlp
 import pytube
 import time
 
-KEYWORD = "KMEC"
+KEYWORD = "Selenium tutorials"
 MAX_SCROLLS = 1
 OUTPUT_FILENAME = "output1"
 OUTPUT_FILEFORMAT = "xlsx"
